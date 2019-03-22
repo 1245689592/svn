@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.8.xsd">
+
+
+    <bean id="mongoFactory" class="com.cm.mongo.holder.MongoClientFactory" init-method="init">
+    	<constructor-arg value="$${mongo.config}"/>
+    </bean>
+	
+	<bean id="commonMongoHolder" class="com.cm.mongo.holder.CommonMongoHolder">
+    	<constructor-arg ref="mongoFactory"/>
+    	<constructor-arg value="common"/>
+    </bean>
+	<!-- 不再使用
+	<bean id="dynamicMongoHolder" class="com.cm.mongo.holder.DynamicMongoHolder">
+    	<constructor-arg ref="mongoFactory"/>
+    	<constructor-arg value="dynamic"/>
+    </bean> -->
+    
+    <bean id="historyMongoHolder" class="com.cm.mongo.holder.HistoryMongoHolder">
+    	<constructor-arg ref="mongoFactory"/>
+    	<constructor-arg value="history"/>
+    </bean>
+</beans>

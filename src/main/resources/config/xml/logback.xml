@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- For assistance related to logback-translator or configuration -->
+<!-- files in general, please contact the logback user mailing list -->
+<!-- at http://www.qos.ch/mailman/listinfo/logback-user -->
+<!-- -->
+<!-- For professional support please see -->
+<!-- http://www.qos.ch/shop/products/professionalSupport -->
+<!-- -->
+<configuration>
+	<!-- 常用logback-DR 配置 -->
+	<appender name="loginAP"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--See http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+		<!--and http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy -->
+		<!--for further documentation -->
+		<file>${catalina.base}/logs/login.log</file>
+		<encoder>
+			<pattern>%d %m%n</pattern>
+		</encoder>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${catalina.base}/logs/login.%d{-yyyy-MM-dd}.%i.log
+			</fileNamePattern>
+			<!-- 每个文件最大有多少 -->
+			<maxFileSize>10MB</maxFileSize>
+			<!-- 最多保留多少天的数据
+			<maxHistory>60</maxHistory> -->
+			<!-- 最多保留多大的数据 
+			<totalSizeCap>3GB</totalSizeCap>-->
+		</rollingPolicy>
+	</appender>
+	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<!-- in the absence of the class attribute, it is assumed that the desired 
+			discriminator type is ch.qos.logback.classic.sift.MDCBasedDiscriminator -->
+		<discriminator class="com.cm.common.logback.TSPDiscriminator">
+			<key>vin</key>
+			<defaultValue>unknown</defaultValue>
+		</discriminator>
+		<sift>
+			<appender name="FILE-${vin}"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${catalina.base}/vinlogs/${vin}.log</file>
+				<encoder>
+					<pattern>%d %m%n</pattern>
+				</encoder>
+				<rollingPolicy
+					class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${catalina.base}/vinlogs/${vin}%d{-yyyy-MM-dd}.log
+					</fileNamePattern>
+					<!-- 最多保留多少天的数据 -->
+					<maxHistory>180</maxHistory>
+					<!-- 最多保留多大的数据
+					<totalSizeCap>10GB</totalSizeCap> -->
+				</rollingPolicy>
+			</appender>
+		</sift>
+	</appender>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<Target>System.out</Target>
+		<encoder>
+			<pattern>#DSPT#%d %5p %c[%M]:%L - %m%n</pattern>
+		</encoder>
+	</appender>
+	 <filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+		<level>INFO</level> <onMatch>ACCEPT</onMatch> <onMismatch>DENY</onMismatch> 
+		</filter>
+	<!-- false只能在本地输出 -->
+	<logger name="dispatcher" additivity="false" level="INFO">
+		<appender-ref ref="SIFT" />
+	</logger>
+	<logger name="login" additivity="false" level="INFO">
+		<appender-ref ref="loginAP" />
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="stdout" />
+	</root>
+	<logger name="org.mongodb" level="INFO"/>
+</configuration>

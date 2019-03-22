@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cache="http://www.springframework.org/schema/cache" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo" 
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+     http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.5.xsd
+     ">
+	<!-- mina accptor 服务主类 -->
+    <bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"
+	    init-method="bind" destroy-method="unbind">
+  		<property name="defaultLocalAddress" value=":$${socket.server.port}" />
+  		<property name="handler" ref="serverHandler" />
+  		<property name="filterChainBuilder" ref="filterChainBuilder" />
+	</bean>
+	<!-- mina accptor 相关参数配置 -->
+	<bean id="sessionConfig" factory-bean="ioAcceptor" 
+        factory-method="getSessionConfig" > 
+        <property name="bothIdleTime" value="$${socket.both.idle.time}"/> 
+<!--         <property name="idleTimeForBoth" value="10"/>  -->
+        <property name="readerIdleTime" value="$${socket.idle.time}"/> 
+        <property name="writerIdleTime" value="$${socket.idle.time}"/>
+        <property name="receiveBufferSize" value="102400"/> 
+    </bean> 
+	<!-- 负责mina的线程池管理的过滤器 -->
+	<bean id="executorFilter"  class="org.apache.mina.filter.executor.ExecutorFilter" >
+		<constructor-arg>
+	     	<bean class="org.apache.mina.filter.executor.UnorderedThreadPoolExecutor">
+	     		<constructor-arg name="corePoolSize" value="$${socket.pool.core.size}"/>
+      			<constructor-arg name="maximumPoolSize" value="$${socket.pool.max.size}"/>
+	     	</bean>
+		</constructor-arg>
+	</bean>
+	<!-- 负责解码和编码的过滤器  -->
+	<bean id="codecFilter"  class="org.apache.mina.filter.codec.ProtocolCodecFilter" >
+		<constructor-arg>
+	     	<bean class="com.cm.tbox.codec.CommonCodecFactory"/>
+		</constructor-arg>
+	</bean>
+	<!-- 过滤器list 如有新的filter 声明后 在这里添加 -->
+	<bean id="filterChainBuilder" class="org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder">
+    	<property name="filters">
+      		<map>
+      		    <entry key="codecFilter" value-ref="codecFilter" />
+        		<entry key="executor" value-ref="executorFilter" />
+      		</map>
+    	</property>
+  	</bean>
+  	<!-- for mina -->
+    <bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+    	<property name="customEditors">
+      		<map>
+        		<entry key="java.net.SocketAddress" value="org.apache.mina.integration.beans.InetSocketAddressEditor" />
+      		</map>
+    	</property>
+    </bean>
+	<!-- 总监听类，负责监听 连接开启，连接关闭，接受消息，异常处理，一般不需要改动 -->
+	<bean id="serverHandler" class="com.cm.tbox.handle.MinaServerHandler">
+		<property name="dispatcherService" ref="dispatcherServiceImpl" />
+	</bean>
+	<!-- 交互server 用来接受消息，发送命令，一般不需要改动 -->
+	<bean id="dispatcherServiceImpl" class="com.cm.tbox.service.impl.DispatcherServiceImpl">
+		<property name="operationService" ref="operationServiceImpl" />
+	</bean>
+	<!-- 自定义业务处理类 可以自定义 需实现IOperationService接口类 -->
+	<bean id="operationServiceImpl" class="com.cm.tbox.service.impl.OperationServiceImpl" />
+</beans>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	
+	xmlns:util="http://www.springframework.org/schema/util"
+	
+	
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	 http://www.springframework.org/schema/util 
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	<bean 
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" /> 	
+	<bean 
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="order" value="-2" />
+		<property name="messageConverters">
+			<list>
+				<bean class="com.cm.common.spring.TSPMappingJackson2HttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>application/json;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean
+					class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/plain;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean
+					class="com.cm.common.spring.TSPStringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>     
+							<value>text/plain;charset=UTF-8</value>
+						</list>
+					</property>
+					<property name="writeAcceptCharset" value="false" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<!-- 声明marshaller,使用Xstream处理 <bean id="xmlMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller"> 
+		<property name="streamDriver"> <bean class="com.thoughtworks.xstream.io.xml.StaxDriver"/> 
+		</property> <property name="annotatedClasses"> <list> </list> </property> 
+		</bean> -->
+	<context:component-scan base-package="com.cm.**.web" />
+	<!-- 开启aop注解功能 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<!-- 静态资源交给服务容器处理 -->
+	<mvc:default-servlet-handler />
+	<!-- <mvc:resources/> -->
+
+<!-- 	<bean id="viewResolver" -->
+<!-- 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
+<!-- 		<property name="suffix" value=".jsp" /> -->
+<!-- 		<property name="contentType" value="text/html; charset=UTF-8" /> -->
+<!-- 	</bean> -->
+	
+	<mvc:interceptors>
+  		 <mvc:interceptor>
+    		<mvc:mapping path="/**" />
+    		<bean class="com.cm.common.interceptor.PrivilegeInterceptor" />
+  		 </mvc:interceptor>
+	</mvc:interceptors>
+	
+	<!-- use the Commons-based implementation of the MultipartResolver interface -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<!-- Exception 处理类 -->
+	<bean id="exceptionResolver" class="com.cm.common.spring.GlobalExceptionResolver">
+	</bean>
+	
+	<util:properties id="applicationProps" location="classpath:config/properties/application.properties"/>
+</beans>

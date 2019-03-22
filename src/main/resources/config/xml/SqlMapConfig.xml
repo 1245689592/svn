@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties>
+		<property name="dialect" value="mysql" />
+		<property name="pageSqlId" value=".*Page$" />
+	</properties>
+	<typeAliases>
+<!-- 		<typeAlias alias="velocity" type="org.mybatis.scripting.velocity.Driver"/> -->
+		<typeAlias type="com.cm.common.mybatis.DateTypeHandle"
+			alias="datetypehandle" />
+		<!-- system -->
+		<typeAlias type="com.cm.system.entity.Config" alias="config" />
+		<typeAlias type="com.cm.system.entity.Log" alias="log" />
+		<typeAlias type="com.cm.system.entity.Resources" alias="resources" />
+		<typeAlias type="com.cm.system.entity.Role" alias="role" />
+		<typeAlias type="com.cm.system.entity.User" alias="user" />
+		<typeAlias type="com.cm.system.entity.RoleResources" alias="roleresources" />
+
+		<typeAlias type="com.cm.system.query.ConfigQuery" alias="configquery" />
+		<typeAlias type="com.cm.system.query.LogQuery" alias="logquery" />
+		<typeAlias type="com.cm.system.query.ResourcesQuery" alias="resourcesquery" />
+		<typeAlias type="com.cm.system.query.RoleQuery" alias="rolequery" />
+		<typeAlias type="com.cm.system.query.UserQuery" alias="userquery" />
+		<!-- terminal -->
+		<typeAlias type="com.cm.terminal.entity.Terminal" alias="terminal" />
+		<typeAlias type="com.cm.terminal.entity.TerminalCell" alias="terminalcell" />
+		<typeAlias type="com.cm.terminal.entity.TerminalSetup" alias="terminalsetup" />
+		<typeAlias type="com.cm.terminal.entity.TerminalStatus" alias="terminalstatus" />
+	
+		<typeAlias type="com.cm.terminal.query.TerminalQuery" alias="terminalquery" />
+		<typeAlias type="com.cm.terminal.query.TerminalCellQuery" alias="terminalcellquery" />
+		<typeAlias type="com.cm.terminal.query.TerminalSetupQuery" alias="terminalsetupquery" />
+		<typeAlias type="com.cm.terminal.query.TerminalStatusQuery" alias="terminalstatusquery" />
+		<!-- vehicle -->
+<!-- 		<typeAlias type="com.cm.vehicle.entity.VehicleHistoryRecord" alias="vehiclehistoryrecord" /> -->
+		<typeAlias type="com.cm.vehicle.entity.VehicleLoginRecord" alias="vehicleloginrecord" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleInfo" alias="vehicleinfo" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleOwner" alias="vehicleowner" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleOwnerVin" alias="vehicleownervin" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleRole" alias="vehiclerole" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleTrackSegment" alias="vehicletracksegment" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleWarnCode" alias="vehiclewarncode" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleWarnRecord" alias="vehiclewarnrecord" />
+		<typeAlias type="com.cm.vehicle.entity.VehicleTrack" alias="vehicletrack" />
+
+		<typeAlias type="com.cm.vehicle.query.VehicleTrackQuery" alias="vehicletrackquery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleHistoryRecordQuery" alias="vehiclehistoryrecordquery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleInfoQuery" alias="vehicleinfoquery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleOwnerQuery" alias="vehicleownerquery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleOwnerVinQuery" alias="vehicleownervinquery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleRoleQuery" alias="vehiclerolequery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleTrackSegmentQuery" alias="vehicletracksegmentquery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleWarnCodeQuery" alias="vehiclewarncodequery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleWarnRecordQuery" alias="vehiclewarnrecordquery" />
+		<typeAlias type="com.cm.vehicle.query.VehicleLoginRecordQuery" alias="vehicleloginrecordquery" />
+	
+		<typeAlias type="com.cm.vehicle.entity.CommandRecord" alias="commandrecord" />
+		
+		<typeAlias type="com.cm.data.entity.DataCity" alias="datacity" />
+		<typeAlias type="com.cm.data.query.DataCityQuery" alias="datacityquery" />
+		
+		<typeAlias type="com.cm.version.entity.Version" alias="version"/>
+		
+		<typeAlias type="com.cm.faulthandle.entity.FaultHandlingRecord" alias="faultHandlingRecord"/>
+		<typeAlias type="com.cm.faulthandle.entity.FaultHandlingLog" alias="faultHandlingLog"/>
+		<typeAlias type="com.cm.faulthandle.query.FaultHandlingRecordQuery" alias="faultHandlingRecordQuery"/>
+		<typeAlias type="com.cm.faulthandle.query.vo.FaultHandlingRecordVO" alias="faultHandlingRecordVo"/>
+		<typeAlias type="com.cm.faulthandle.query.FaultHandlingLogQuery" alias = "faultHandlingLogQuery"/>
+		<typeAlias type="com.cm.faulthandle.query.vo.FaultHandlingLogVO" alias = "faultHandlingLogVO"/>
+		
+		
+		
+		
+	</typeAliases>
+	<plugins>
+		<plugin interceptor="com.cm.common.mybatis.PageInterceptor"></plugin>
+	</plugins>
+</configuration>
